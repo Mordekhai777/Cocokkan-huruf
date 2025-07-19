@@ -312,18 +312,21 @@
         { letter: 'Y', word: 'yogurt', emoji: '🥛' },
         { letter: 'Z', word: 'zebra', emoji: '🦓' }
     ];
-    // === AUDIO SETUP ===
-    const audioBacksound = new Audio('backsound.mp3');
-    audioBacksound.loop = true;
-    audioBacksound.volume = 0.3;
+    // === AUDIO SETUP (dengan file online dari Pixabay) ===
+const audioBacksound = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_9e64cb68fd.mp3'); // musik ceria
+audioBacksound.loop = true;
+audioBacksound.volume = 0.3;
 
-    const audioBenar = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_342fb6a9e2.mp3'); // suara ding
-    const audioSalah = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_d87fa7426a.mp3'); // suara salah
-    const audioTepukTangan = new Audio('https://cdn.pixabay.com/audio/2021/09/01/audio_6e6c6b55b5.mp3'); // tepuk tangan
-    // Mulai backsound saat interaksi pertama (untuk mem-bypass autoplay policy browser)
-    document.addEventListener('click', () => {
-        if (audioBacksound.paused) {
-            audioBacksound.play();
+const audioBenar = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_342fb6a9e2.mp3'); // suara benar
+const audioSalah = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_d87fa7426a.mp3'); // suara salah
+const audioTepukTangan = new Audio('https://cdn.pixabay.com/audio/2021/09/01/audio_6e6c6b55b5.mp3'); // tepuk tangan
+
+// Mulai backsound setelah interaksi pertama (untuk autoplay policy)
+document.addEventListener('click', () => {
+    if (audioBacksound.paused) {
+        audioBacksound.play();
+    }
+}, { once: true });
     }
 }, { once: true });
     // Game variables
@@ -461,6 +464,7 @@
             // Correct answer
             feedbackEl.textContent = 'Benar! 🎉';
             feedbackEl.className = 'text-xl md:text-2xl font-bold mb-4 h-8 text-green-600';
+            audioBenar.play();
             score += 10;
             correctAnswers++;
             
@@ -501,6 +505,7 @@
             // Wrong answer
             feedbackEl.textContent = 'Coba lagi! 😊';
             feedbackEl.className = 'text-xl md:text-2xl font-bold mb-4 h-8 text-red-600';
+            audioSalah.play();
             wrongAnswers++;
             
             // Shake the word
@@ -600,6 +605,7 @@
         `;
         
         // Create lots of confetti for game completion
+        audioTepukTangan.play();
         createConfetti();
         createConfetti();
         
