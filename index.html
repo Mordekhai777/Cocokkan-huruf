@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Edukasi: Pilih Yang Lebih Kecil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+   body {
+        font-family: 'Comic Neue', cursive;
+        background: linear-gradient(135deg, #ffcce6, #c4f2ff);
+        overflow-x: hidden;
+        padding: 90px;
+    }
+    
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 90px;
+    }
+    
+    .letter-btn {
+        width: 60px;
+        height: 60px;
+        margin: 8px;
+        border-radius: 12px;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .letter-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .card {
+        background-color: white;
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+        margin: 20px 0;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+    }
+    
+    .image-container {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 25px;
+    }
+    
+    .emoji {
+        font-size: 140px;
+        line-height: 1;
+    }
+    
+    .floating {
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    .bounce {
+        animation: bounce 0.5s;
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+    }
+    
+    .shake {
+        animation: shake 0.5s;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+    
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #f00;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    
+    .progress-bar {
+        height: 24px;
+        background-color: #e0e0e0;
+        border-radius: 12px;
+        margin: 15px 0;
+        overflow: hidden;
+    }
+    
+    .progress {
+        height: 100%;
+        background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+        border-radius: 12px;
+        transition: width 0.5s;
+    }
+    
+    .xylophone {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 140px;
+        width: 140px;
+    }
+    
+    .xylophone-bar {
+        width: 12px;
+        margin: 0 3px;
+        border-radius: 6px 6px 0 0;
+    }
+    
+    .instructions {
+        background-color: #fff9e6;
+        border-radius: 16px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+</style>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress" id="progress" style="width: 0%"></div>
+    </div>
+    
+    <!-- Score Display -->
+    <div class="flex justify-between items-center mb-6 px-4">
+        <div class="text-xl font-bold text-purple-800">
+            Skor: <span id="score">0</span>
+        </div>
+        <div class="text-xl font-bold text-purple-800">
+            Benar: <span id="correct">0</span> | Salah: <span id="wrong">0</span>
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div class="card">
+        <div class="flex justify-between items-center mb-6">
+            <button id="prev-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full text-lg">
+                ← Sebelumnya
+            </button>
+            <div class="text-center">
+                <span id="current-level" class="text-2xl font-bold text-purple-800">Huruf 1/26</span>
+            </div>
+            <button id="next-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full text-lg">
+                Selanjutnya →
+            </button>
+        </div>
+
+        <div id="game-container" class="text-center">
+            <div class="image-container">
+                <div id="emoji-container">
+                    <div id="emoji" class="emoji floating">🍎</div>
+                </div>
+            </div>
+            <h2 id="word" class="text-4xl font-bold mb-6">_pel</h2>
+            
+            <div id="feedback" class="text-3xl font-bold mb-6 h-10"></div>
+            
+            <div id="letters" class="flex flex-wrap justify-center gap-4 mb-4">
+                <!-- Letters will be generated here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Instructions -->
+    <div class="instructions">
+        <h3 class="text-2xl font-bold text-purple-800 mb-3">Cara Bermain:</h3>
+        <p class="text-xl mb-2">1. Lihat gambar dan kata yang huruf depannya hilang</p>
+        <p class="text-xl mb-2">2. Pilih huruf yang tepat untuk melengkapi kata</p>
+        <p class="text-xl">3. Dapatkan bintang untuk setiap jawaban benar!</p>
+    </div>
+    
+    <!-- Character Guide -->
+    <div class="mt-6 flex justify-center gap-6">
+        <div class="text-4xl floating">🍎</div>
+        <div class="text-4xl floating" style="animation-delay: 0.5s">🐶</div>
+        <div class="text-4xl floating" style="animation-delay: 1s">🍇</div>
+        <div class="text-4xl floating" style="animation-delay: 1.5s">🙊</div>
+    </div>
+</div>
+
+<script>
+    // Game data
+    const gameData = [
+        { letter: 'A', word: 'apel', emoji: '🍎' },
+        { letter: 'B', word: 'bebek', emoji: '🦆' },
+        { letter: 'C', word: 'cicak', emoji: '🦎' },
+        { letter: 'D', word: 'domba', emoji: '🐑' },
+        { letter: 'E', word: 'elang', emoji: '🦅' },
+        { letter: 'F', word: 'flamingo', emoji: '🦩' },
+        { letter: 'G', word: 'gajah', emoji: '🐘' },
+        { letter: 'H', word: 'harimau', emoji: '🐯' },
+        { letter: 'I', word: 'ikan', emoji: '🐠' },
+        { letter: 'J', word: 'jeruk', emoji: '🍊' },
+        { letter: 'K', word: 'kelinci', emoji: '🐰' },
+        { letter: 'L', word: 'lemon', emoji: '🍋' },
+        { letter: 'M', word: 'mangga', emoji: '🥭' },
+        { letter: 'N', word: 'nanas', emoji: '🍍' },
+        { letter: 'O', word: 'onta', emoji: '🐪' },
+        { letter: 'P', word: 'pisang', emoji: '🍌' },
+        { letter: 'Q', word: 'quokka', emoji: '🦘' },
+        { letter: 'R', word: 'rusa', emoji: '🦌' },
+        { letter: 'S', word: 'semangka', emoji: '🍉' },
+        { letter: 'T', word: 'tomat', emoji: '🍅' },
+        { letter: 'U', word: 'ular', emoji: '🐍' },
+        { letter: 'V', word: 'vanilla', emoji: '🍦', special: true },
+        { letter: 'W', word: 'wortel', emoji: '🥕' },
+        { letter: 'X', word: 'xilofon', emoji: '🎵', special: true },
+        { letter: 'Y', word: 'yogurt', emoji: '🥛' },
+        { letter: 'Z', word: 'zebra', emoji: '🦓' }
+    ];
+
+    // Game variables
+    let currentIndex = 0;
+    let score = 0;
+    let correctAnswers = 0;
+    let wrongAnswers = 0;
+    
+    // DOM elements
+    const emojiContainer = document.getElementById('emoji-container');
+    const wordEl = document.getElementById('word');
+    const lettersEl = document.getElementById('letters');
+    const feedbackEl = document.getElementById('feedback');
+    const scoreEl = document.getElementById('score');
+    const correctEl = document.getElementById('correct');
+    const wrongEl = document.getElementById('wrong');
+    const progressEl = document.getElementById('progress');
+    const currentLevelEl = document.getElementById('current-level');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    
+    // Initialize the game
+    function initGame() {
+        updateLevel();
+        generateLetters();
+        updateProgress();
+    }
+    
+    // Update the current level display
+    function updateLevel() {
+        const currentData = gameData[currentIndex];
+        
+        // Clear previous content
+        emojiContainer.innerHTML = '';
+        
+        if (currentData.letter === 'X') {
+            // Create xylophone for X
+            const xylophone = document.createElement('div');
+            xylophone.className = 'xylophone floating';
+            
+            const colors = ['#ff0000', '#ff9900', '#ffff00', '#33cc33', '#3399ff', '#9966ff', '#ff66ff', '#ff0066'];
+            
+            for (let i = 0; i < 8; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'xylophone-bar';
+                bar.style.height = `${50 + i * 10}px`;
+                bar.style.backgroundColor = colors[i];
+                xylophone.appendChild(bar);
+            }
+            
+            emojiContainer.appendChild(xylophone);
+        } else if (currentData.letter === 'V') {
+            // Create vanilla ice cream for V
+            const vanillaEmoji = document.createElement('div');
+            vanillaEmoji.className = 'emoji floating';
+            vanillaEmoji.textContent = currentData.emoji;
+            emojiContainer.appendChild(vanillaEmoji);
+        } else {
+            // Regular emoji
+            const emoji = document.createElement('div');
+            emoji.className = 'emoji floating';
+            emoji.id = 'emoji';
+            emoji.textContent = currentData.emoji;
+            emojiContainer.appendChild(emoji);
+        }
+        
+        wordEl.textContent = '_' + currentData.word.substring(1);
+        currentLevelEl.textContent = `Huruf ${currentIndex + 1}/26`;
+        feedbackEl.textContent = '';
+        feedbackEl.className = '';
+    }
+    
+    // Generate letter buttons - only 8 options including the correct one
+    function generateLetters() {
+        lettersEl.innerHTML = '';
+        
+        const correctLetter = gameData[currentIndex].letter;
+        
+        // Create an array with the correct letter and 7 random different letters
+        let letterOptions = [correctLetter];
+        const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        
+        // Remove the correct letter from the pool
+        const remainingLetters = allLetters.filter(letter => letter !== correctLetter);
+        
+        // Shuffle the remaining letters
+        for (let i = remainingLetters.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [remainingLetters[i], remainingLetters[j]] = [remainingLetters[j], remainingLetters[i]];
+        }
+        
+        // Add 7 random letters
+        letterOptions = [...letterOptions, ...remainingLetters.slice(0, 7)];
+        
+        // Shuffle the final options
+        for (let i = letterOptions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [letterOptions[i], letterOptions[j]] = [letterOptions[j], letterOptions[i]];
+        }
+        
+        // Create buttons for each letter option
+        letterOptions.forEach(letter => {
+            const button = document.createElement('button');
+            button.textContent = letter;
+            button.className = 'letter-btn bg-gradient-to-r from-blue-400 to-purple-500 text-white';
+            button.onclick = () => checkAnswer(letter);
+            lettersEl.appendChild(button);
+        });
+    }
+    
+    // Check if the selected letter is correct
+    function checkAnswer(letter) {
+        const correctLetter = gameData[currentIndex].letter;
+        
+        if (letter === correctLetter) {
+            // Correct answer
+            feedbackEl.textContent = 'Benar! 🎉';
+            feedbackEl.className = 'text-3xl font-bold mb-6 h-10 text-green-600';
+            score += 10;
+            correctAnswers++;
+            
+            // Show the correct letter in the word
+            wordEl.textContent = gameData[currentIndex].word;
+            wordEl.classList.add('bounce');
+            
+            // Add bounce animation to the emoji or special element
+            const animatedElement = emojiContainer.firstChild;
+            if (animatedElement) {
+                animatedElement.classList.remove('floating');
+                animatedElement.classList.add('bounce');
+                setTimeout(() => {
+                    animatedElement.classList.remove('bounce');
+                    animatedElement.classList.add('floating');
+                }, 500);
+            }
+            
+            setTimeout(() => {
+                wordEl.classList.remove('bounce');
+            }, 500);
+            
+            // Create confetti effect
+            createConfetti();
+            
+            // Move to next question after a delay
+            setTimeout(() => {
+                if (currentIndex < gameData.length - 1) {
+                    currentIndex++;
+                    updateLevel();
+                    generateLetters();
+                    updateProgress();
+                } else {
+                    showGameComplete();
+                }
+            }, 1800);
+        } else {
+            // Wrong answer
+            feedbackEl.textContent = 'Coba lagi! 😊';
+            feedbackEl.className = 'text-3xl font-bold mb-6 h-10 text-red-600';
+            wrongAnswers++;
+            
+            // Shake the word
+            wordEl.classList.add('shake');
+            
+            // Add shake animation to the emoji or special element
+            const animatedElement = emojiContainer.firstChild;
+            if (animatedElement) {
+                animatedElement.classList.remove('floating');
+                animatedElement.classList.add('shake');
+                setTimeout(() => {
+                    animatedElement.classList.remove('shake');
+                    animatedElement.classList.add('floating');
+                }, 500);
+            }
+            
+            setTimeout(() => {
+                wordEl.classList.remove('shake');
+            }, 500);
+        }
+        
+        // Update score display
+        scoreEl.textContent = score;
+        correctEl.textContent = correctAnswers;
+        wrongEl.textContent = wrongAnswers;
+    }
+    
+    // Update progress bar
+    function updateProgress() {
+        const progress = ((currentIndex) / gameData.length) * 100;
+        progressEl.style.width = `${progress}%`;
+    }
+    
+    // Create confetti effect
+    function createConfetti() {
+        const container = document.querySelector('body');
+        
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            
+            // Random position
+            const startX = Math.random() * window.innerWidth;
+            const startY = -10;
+            
+            // Random color
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            confetti.style.left = `${startX}px`;
+            confetti.style.top = `${startY}px`;
+            confetti.style.backgroundColor = color;
+            
+            // Random animation
+            const duration = Math.random() * 3 + 2;
+            const delay = Math.random() * 2;
+            
+            confetti.style.animation = `
+                fall ${duration}s ease-in ${delay}s forwards,
+                sway ${duration / 2}s ease-in-out ${delay}s infinite alternate
+            `;
+            
+            container.appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => {
+                confetti.remove();
+            }, (duration + delay) * 1000);
+        }
+    }
+    
+    // Show game complete message
+    function showGameComplete() {
+        const gameContainer = document.getElementById('game-container');
+        gameContainer.innerHTML = `
+            <div class="text-center p-8">
+                <h2 class="text-5xl font-bold text-purple-800 mb-6">Selamat! 🎉</h2>
+                <p class="text-3xl mb-6">Kamu telah menyelesaikan semua huruf!</p>
+                <p class="text-2xl mb-8">Skor akhir: <span class="font-bold">${score}</span></p>
+                <div class="flex justify-center gap-6 text-6xl mb-8">
+                    <span class="floating">🍎</span>
+                    <span class="floating" style="animation-delay: 0.3s">🐶</span>
+                    <span class="floating" style="animation-delay: 0.6s">🍇</span>
+                    <span class="floating" style="animation-delay: 0.9s">🙊</span>
+                    <span class="floating" style="animation-delay: 1.2s">🍒</span>
+                    <span class="floating" style="animation-delay: 1.5s">🍌</span>
+                </div>
+                <button id="restart-btn" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-full text-2xl">
+                    Main Lagi
+                </button>
+            </div>
+        `;
+        
+        // Create lots of confetti for game completion
+        createConfetti();
+        createConfetti();
+        
+        // Add restart button event listener
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            currentIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            scoreEl.textContent = score;
+            correctEl.textContent = correctAnswers;
+            wrongEl.textContent = wrongAnswers;
+            updateLevel();
+            generateLetters();
+            updateProgress();
+        });
+    }
+    
+    // Add fall and sway animations for confetti
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes sway {
+            from {
+                transform: translateX(-20px);
+            }
+            to {
+                transform: translateX(20px);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Navigation button event listeners
+    prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateLevel();
+            generateLetters();
+            updateProgress();
+        }
+    });
+    
+    nextBtn.addEventListener('click', () => {
+        if (currentIndex < gameData.length - 1) {
+            currentIndex++;
+            updateLevel();
+            generateLetters();
+            updateProgress();
+        }
+    });
+    
+    // Initialize the game
+    initGame();
+</script>
