@@ -312,7 +312,20 @@
         { letter: 'Y', word: 'yogurt', emoji: '🥛' },
         { letter: 'Z', word: 'zebra', emoji: '🦓' }
     ];
+    // === AUDIO SETUP ===
+    const audioBacksound = new Audio('backsound.mp3');
+    audioBacksound.loop = true;
+    audioBacksound.volume = 0.3;
 
+    const audioBenar = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_342fb6a9e2.mp3'); // suara ding
+    const audioSalah = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_d87fa7426a.mp3'); // suara salah
+    const audioTepukTangan = new Audio('https://cdn.pixabay.com/audio/2021/09/01/audio_6e6c6b55b5.mp3'); // tepuk tangan
+    // Mulai backsound saat interaksi pertama (untuk mem-bypass autoplay policy browser)
+    document.addEventListener('click', () => {
+        if (audioBacksound.paused) {
+            audioBacksound.play();
+    }
+}, { once: true });
     // Game variables
     let currentIndex = 0;
     let score = 0;
