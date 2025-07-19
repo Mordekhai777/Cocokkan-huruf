@@ -11,56 +11,88 @@
         font-family: 'Comic Neue', cursive;
         background: linear-gradient(135deg, #ffcce6, #c4f2ff);
         overflow-x: hidden;
-        padding: 20px;
+        padding: 10px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
     
     .container {
         max-width: 800px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 10px;
+        width: 100%;
+        flex: 1;
     }
     
     .letter-btn {
-        width: 60px;
-        height: 60px;
-        margin: 8px;
+        width: 55px;
+        height: 55px;
+        margin: 5px;
         border-radius: 12px;
-        font-size: 28px;
+        font-size: 24px;
         font-weight: bold;
         cursor: pointer;
         transition: all 0.3s;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
+    @media (max-width: 480px) {
+        .letter-btn {
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            margin: 3px;
+        }
+    }
+    
     .letter-btn:hover {
         transform: scale(1.1);
+    }
+    
+    .letter-btn:active {
+        transform: scale(0.95);
     }
     
     .card {
         background-color: white;
         border-radius: 24px;
-        padding: 30px;
+        padding: 20px;
         box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         transition: all 0.3s;
-        margin: 20px 0;
+        margin: 15px 0;
     }
     
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+    @media (max-width: 640px) {
+        .card {
+            padding: 15px;
+            border-radius: 20px;
+        }
     }
     
     .image-container {
-        height: 200px;
+        height: 180px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 25px;
+        margin-bottom: 15px;
+    }
+    
+    @media (max-width: 480px) {
+        .image-container {
+            height: 140px;
+        }
     }
     
     .emoji {
-        font-size: 140px;
+        font-size: 120px;
         line-height: 1;
+    }
+    
+    @media (max-width: 480px) {
+        .emoji {
+            font-size: 100px;
+        }
     }
     
     .floating {
@@ -102,17 +134,17 @@
     }
     
     .progress-bar {
-        height: 24px;
+        height: 20px;
         background-color: #e0e0e0;
-        border-radius: 12px;
-        margin: 15px 0;
+        border-radius: 10px;
+        margin: 10px 0;
         overflow: hidden;
     }
     
     .progress {
         height: 100%;
         background: linear-gradient(90deg, #ff9a9e, #fad0c4);
-        border-radius: 12px;
+        border-radius: 10px;
         transition: width 0.5s;
     }
     
@@ -120,22 +152,71 @@
         display: flex;
         justify-content: center;
         align-items: flex-end;
-        height: 140px;
-        width: 140px;
+        height: 120px;
+        width: 120px;
+    }
+    
+    @media (max-width: 480px) {
+        .xylophone {
+            height: 100px;
+            width: 100px;
+        }
     }
     
     .xylophone-bar {
-        width: 12px;
-        margin: 0 3px;
-        border-radius: 6px 6px 0 0;
+        width: 10px;
+        margin: 0 2px;
+        border-radius: 4px 4px 0 0;
     }
     
     .instructions {
         background-color: #fff9e6;
         border-radius: 16px;
-        padding: 20px;
-        margin: 20px 0;
+        padding: 15px;
+        margin: 15px 0;
         box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    
+    @media (max-width: 640px) {
+        .instructions {
+            padding: 12px;
+        }
+    }
+    
+    /* Fix for touch devices */
+    @media (hover: none) {
+        .letter-btn:hover {
+            transform: none;
+        }
+    }
+    
+    /* Landscape orientation adjustments */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .card {
+            flex: 1 1 60%;
+            min-width: 300px;
+        }
+        
+        .instructions {
+            flex: 1 1 30%;
+            min-width: 250px;
+            margin-top: 0;
+        }
+        
+        .image-container {
+            height: 120px;
+        }
+        
+        .emoji {
+            font-size: 90px;
+        }
     }
 </style>
 
@@ -145,25 +226,25 @@
     </div>
     
     <!-- Score Display -->
-    <div class="flex justify-between items-center mb-6 px-4">
-        <div class="text-xl font-bold text-purple-800">
+    <div class="flex justify-between items-center mb-3 px-2">
+        <div class="text-base md:text-lg font-bold text-purple-800">
             Skor: <span id="score">0</span>
         </div>
-        <div class="text-xl font-bold text-purple-800">
+        <div class="text-base md:text-lg font-bold text-purple-800">
             Benar: <span id="correct">0</span> | Salah: <span id="wrong">0</span>
         </div>
     </div>
 
     <!-- Game Container -->
     <div class="card">
-        <div class="flex justify-between items-center mb-6">
-            <button id="prev-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full text-lg">
+        <div class="flex justify-between items-center mb-4">
+            <button id="prev-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-3 md:py-3 md:px-4 rounded-full text-sm md:text-base">
                 ← Sebelumnya
             </button>
             <div class="text-center">
-                <span id="current-level" class="text-2xl font-bold text-purple-800">Huruf 1/26</span>
+                <span id="current-level" class="text-lg md:text-xl font-bold text-purple-800">Huruf 1/26</span>
             </div>
-            <button id="next-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full text-lg">
+            <button id="next-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-3 md:py-3 md:px-4 rounded-full text-sm md:text-base">
                 Selanjutnya →
             </button>
         </div>
@@ -174,11 +255,11 @@
                     <div id="emoji" class="emoji floating">🍎</div>
                 </div>
             </div>
-            <h2 id="word" class="text-4xl font-bold mb-6">_pel</h2>
+            <h2 id="word" class="text-3xl md:text-4xl font-bold mb-4">_pel</h2>
             
-            <div id="feedback" class="text-3xl font-bold mb-6 h-10"></div>
+            <div id="feedback" class="text-xl md:text-2xl font-bold mb-4 h-8"></div>
             
-            <div id="letters" class="flex flex-wrap justify-center gap-4 mb-4">
+            <div id="letters" class="flex flex-wrap justify-center gap-2 mb-2">
                 <!-- Letters will be generated here -->
             </div>
         </div>
@@ -186,18 +267,18 @@
     
     <!-- Instructions -->
     <div class="instructions">
-        <h3 class="text-2xl font-bold text-purple-800 mb-3">Cara Bermain:</h3>
-        <p class="text-xl mb-2">1. Lihat gambar dan kata yang huruf depannya hilang</p>
-        <p class="text-xl mb-2">2. Pilih huruf yang tepat untuk melengkapi kata</p>
-        <p class="text-xl">3. Dapatkan bintang untuk setiap jawaban benar!</p>
+        <h3 class="text-lg md:text-xl font-bold text-purple-800 mb-2">Cara Bermain:</h3>
+        <p class="text-base md:text-lg mb-1">1. Lihat gambar dan kata yang huruf depannya hilang</p>
+        <p class="text-base md:text-lg mb-1">2. Pilih huruf yang tepat untuk melengkapi kata</p>
+        <p class="text-base md:text-lg">3. Dapatkan bintang untuk setiap jawaban benar!</p>
     </div>
     
     <!-- Character Guide -->
-    <div class="mt-6 flex justify-center gap-6">
-        <div class="text-4xl floating">🍎</div>
-        <div class="text-4xl floating" style="animation-delay: 0.5s">🐶</div>
-        <div class="text-4xl floating" style="animation-delay: 1s">🍇</div>
-        <div class="text-4xl floating" style="animation-delay: 1.5s">🙊</div>
+    <div class="mt-4 flex justify-center gap-4">
+        <div class="text-2xl md:text-3xl floating">🍎</div>
+        <div class="text-2xl md:text-3xl floating" style="animation-delay: 0.5s">🐶</div>
+        <div class="text-2xl md:text-3xl floating" style="animation-delay: 1s">🍇</div>
+        <div class="text-2xl md:text-3xl floating" style="animation-delay: 1.5s">🙊</div>
     </div>
 </div>
 
@@ -256,6 +337,22 @@
         updateLevel();
         generateLetters();
         updateProgress();
+        
+        // Add touch event listeners for mobile
+        addTouchListeners();
+    }
+    
+    // Add touch event listeners for better mobile experience
+    function addTouchListeners() {
+        document.querySelectorAll('.letter-btn').forEach(btn => {
+            btn.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            btn.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
     }
     
     // Update the current level display
@@ -275,7 +372,7 @@
             for (let i = 0; i < 8; i++) {
                 const bar = document.createElement('div');
                 bar.className = 'xylophone-bar';
-                bar.style.height = `${50 + i * 10}px`;
+                bar.style.height = `${40 + i * 10}px`;
                 bar.style.backgroundColor = colors[i];
                 xylophone.appendChild(bar);
             }
@@ -338,6 +435,9 @@
             button.onclick = () => checkAnswer(letter);
             lettersEl.appendChild(button);
         });
+        
+        // Add touch event listeners for mobile
+        addTouchListeners();
     }
     
     // Check if the selected letter is correct
@@ -347,7 +447,7 @@
         if (letter === correctLetter) {
             // Correct answer
             feedbackEl.textContent = 'Benar! 🎉';
-            feedbackEl.className = 'text-3xl font-bold mb-6 h-10 text-green-600';
+            feedbackEl.className = 'text-xl md:text-2xl font-bold mb-4 h-8 text-green-600';
             score += 10;
             correctAnswers++;
             
@@ -387,7 +487,7 @@
         } else {
             // Wrong answer
             feedbackEl.textContent = 'Coba lagi! 😊';
-            feedbackEl.className = 'text-3xl font-bold mb-6 h-10 text-red-600';
+            feedbackEl.className = 'text-xl md:text-2xl font-bold mb-4 h-8 text-red-600';
             wrongAnswers++;
             
             // Shake the word
@@ -421,11 +521,12 @@
         progressEl.style.width = `${progress}%`;
     }
     
-    // Create confetti effect
+    // Create confetti effect - optimized for mobile
     function createConfetti() {
         const container = document.querySelector('body');
+        const confettiCount = window.innerWidth < 480 ? 30 : 50; // Fewer confetti on mobile
         
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < confettiCount; i++) {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
             
@@ -462,20 +563,24 @@
     // Show game complete message
     function showGameComplete() {
         const gameContainer = document.getElementById('game-container');
+        
+        // Responsive design for completion screen
+        const emojiSize = window.innerWidth < 480 ? 'text-4xl' : 'text-5xl';
+        const headingSize = window.innerWidth < 480 ? 'text-3xl' : 'text-4xl';
+        const textSize = window.innerWidth < 480 ? 'text-xl' : 'text-2xl';
+        
         gameContainer.innerHTML = `
-            <div class="text-center p-8">
-                <h2 class="text-5xl font-bold text-purple-800 mb-6">Selamat! 🎉</h2>
-                <p class="text-3xl mb-6">Kamu telah menyelesaikan semua huruf!</p>
-                <p class="text-2xl mb-8">Skor akhir: <span class="font-bold">${score}</span></p>
-                <div class="flex justify-center gap-6 text-6xl mb-8">
+            <div class="text-center p-4 md:p-8">
+                <h2 class="${headingSize} font-bold text-purple-800 mb-4">Selamat! 🎉</h2>
+                <p class="${textSize} mb-4">Kamu telah menyelesaikan semua huruf!</p>
+                <p class="text-lg md:text-xl mb-6">Skor akhir: <span class="font-bold">${score}</span></p>
+                <div class="flex justify-center gap-3 ${emojiSize} mb-6">
                     <span class="floating">🍎</span>
                     <span class="floating" style="animation-delay: 0.3s">🐶</span>
                     <span class="floating" style="animation-delay: 0.6s">🍇</span>
                     <span class="floating" style="animation-delay: 0.9s">🙊</span>
-                    <span class="floating" style="animation-delay: 1.2s">🍒</span>
-                    <span class="floating" style="animation-delay: 1.5s">🍌</span>
                 </div>
-                <button id="restart-btn" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-full text-2xl">
+                <button id="restart-btn" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-full text-lg md:text-xl">
                     Main Lagi
                 </button>
             </div>
@@ -538,6 +643,15 @@
             generateLetters();
             updateProgress();
         }
+    });
+    
+    // Handle orientation change
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            // Re-render the game after orientation change
+            updateLevel();
+            generateLetters();
+        }, 200);
     });
     
     // Initialize the game
